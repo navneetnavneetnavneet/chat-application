@@ -13,9 +13,8 @@ require("./config/db").connectDatabase();
 // logger
 app.use(logger("tiny"));
 
-app.get("/", (req, res, next) => {
-  res.json("homepage");
-});
+// routes
+app.use("/users", require("./routes/userRoutes"));
 
 // error handling
 app.all("*", (req, res, next) => {
