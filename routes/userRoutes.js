@@ -10,7 +10,7 @@ const { isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
 
 // GET /users
-router.get("/", homepage);
+router.get("/", isAuthenticated, homepage);
 
 // POST /users/currentuser
 router.post("/currentuser", isAuthenticated, currentUser);

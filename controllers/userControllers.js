@@ -4,7 +4,8 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const { sendToken } = require("../utils/SendToken");
 
 module.exports.homepage = catchAsyncErrors(async (req, res, next) => {
-  res.json({ message: "homepage" });
+  const alluser = await User.find({ _id: { $ne: req.id } });
+  res.status(200).json({ alluser });
 });
 
 module.exports.currentUser = catchAsyncErrors(async (req, res, next) => {
