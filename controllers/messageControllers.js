@@ -38,4 +38,13 @@ module.exports.sendMessage = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+module.exports.getMessage = catchAsyncErrors(async (req, res, next) => {
+  const senderId = req.id;
+  const receiverId = req.params.id;
 
+  const conversation = await Conversation.findOne({
+    participaints: { $all: [senderId, receiverId] },
+  }).populate("messages");
+
+  console.log(conversation);
+});
