@@ -31,6 +31,7 @@ app.use(logger("tiny"));
 
 // routes
 app.use("/users", require("./routes/userRoutes"));
+app.use("/messages", require("./routes/messageRoutes"));
 
 // error handling
 app.all("*", (req, res, next) => {
