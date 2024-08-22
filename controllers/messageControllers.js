@@ -46,5 +46,5 @@ module.exports.getMessage = catchAsyncErrors(async (req, res, next) => {
     participaints: { $all: [senderId, receiverId] },
   }).populate("messages");
 
-  console.log(conversation);
+  return res.status(200).json(conversation?.messages);
 });
