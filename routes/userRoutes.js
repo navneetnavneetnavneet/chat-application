@@ -12,8 +12,8 @@ const router = express.Router();
 // GET /users
 router.get("/", isAuthenticated, homepage);
 
-// POST /users/currentuser
-router.post("/currentuser", isAuthenticated, currentUser);
+// GET /users/currentuser
+router.get("/currentuser", isAuthenticated, currentUser);
 
 // POST /users/signup
 router.post("/signup", signupUser);
