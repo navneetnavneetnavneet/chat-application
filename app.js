@@ -2,7 +2,8 @@ require("dotenv").config({
   path: "./.env",
 });
 const express = require("express");
-const app = express();
+// const app = express();
+const {app, server} = require("./socket/socket");
 const logger = require("morgan");
 const ErrorHandler = require("./utils/ErrorHandler");
 const { generatedErrors } = require("./middlewares/errors");
@@ -44,6 +45,6 @@ app.all("*", (req, res, next) => {
 app.use(generatedErrors);
 
 // create server
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
