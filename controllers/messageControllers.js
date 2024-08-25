@@ -1,7 +1,7 @@
 const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
 const Conversation = require("../models/conversationModel");
 const Message = require("../models/messageModel");
-const { io, getReceiverSocketId} = require("../socket/socket");
+const { io, getReceiverSocketId } = require("../socket/socket");
 
 module.exports.sendMessage = catchAsyncErrors(async (req, res, next) => {
   const senderId = req.id;
@@ -29,7 +29,8 @@ module.exports.sendMessage = catchAsyncErrors(async (req, res, next) => {
     getConversation.messages.push(newMessage._id);
   }
 
-  await getConversation.save();
+  // await getConversation.save();
+  await Promise.all([getConversation.save(), newMessage.save()]);
 
   //   soket.io
   const receiverSocketId = getReceiverSocketId(receiverId);
