@@ -2,6 +2,9 @@ const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
 const User = require("../models/userModel");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { sendToken } = require("../utils/SendToken");
+const imagekit = require("../utils/Imagekit").initImageKit();
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 
 module.exports.homepage = catchAsyncErrors(async (req, res, next) => {
   const alluser = await User.find({ _id: { $ne: req.id } });
@@ -52,5 +55,39 @@ module.exports.signoutUser = catchAsyncErrors(async (req, res, next) => {
   res.clearCookie("token");
   res.status(200).json({
     messsage: "User Logout Successfully",
+  });
+});
+
+module.exports.editUserProfile = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.id, req.body, { new: true });
+
+  if (!user) {
+    return next(new ErrorHandler("Please login to access the resource", 404));
+  }
+  console.log(req.files);
+
+  if (req.files) {
+    // old file delete code
+    if (user.profileImage.fileId !== "") {
+      await imagekit.deleteFile(user.profileImage.fileId);
+    }
+
+    const file = req.files.profileImage;
+    const modifiedFileName = uuidv4() + path.extname(file.name);
+
+    const { fileId, url } = await imagekit.upload({
+      file: file.data,
+      fileName: modifiedFileName,
+    });
+
+    user.profileImage = { fileId, url };
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "User Updated Successfully",
+    user,
   });
 });

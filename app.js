@@ -10,6 +10,7 @@ const { generatedErrors } = require("./middlewares/errors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const expressFileupload = require("express-fileupload");
 
 // db connection
 require("./config/db").connectDatabase();
@@ -30,6 +31,9 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+// express-fileupload
+app.use(expressFileupload());
 
 // logger
 app.use(logger("tiny"));

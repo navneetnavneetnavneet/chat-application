@@ -5,6 +5,7 @@ const {
   signupUser,
   signinUser,
   signoutUser,
+  editUserProfile,
 } = require("../controllers/userControllers");
 const { isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
@@ -23,5 +24,8 @@ router.post("/signin", signinUser);
 
 // GET /users/signout
 router.get("/signout", isAuthenticated, signoutUser);
+
+// POST /users/edit
+router.post("/edit", isAuthenticated, editUserProfile);
 
 module.exports = router;

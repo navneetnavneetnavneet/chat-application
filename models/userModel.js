@@ -30,9 +30,11 @@ const userSchema = new mongoose.Schema(
       minLength: [6, "Password Should have atleast 6 character !"],
     },
     profileImage: {
-      type: String,
-      default:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLSc0PAlRfet50plvDWIqsivH5ffUlc_LgfQ&s",
+      type: Object,
+      default: {
+        fileId: "",
+        url: "https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png",
+      },
     },
     gender: {
       type: String,

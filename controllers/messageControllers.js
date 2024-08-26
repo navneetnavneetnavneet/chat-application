@@ -13,7 +13,7 @@ module.exports.sendMessage = catchAsyncErrors(async (req, res, next) => {
   });
 
   if (!getConversation) {
-    getConversation = Conversation.create({
+    getConversation = await Conversation.create({
       participaints: [senderId, receiverId],
     });
   }
