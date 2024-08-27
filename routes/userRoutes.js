@@ -6,6 +6,7 @@ const {
   signinUser,
   signoutUser,
   editUserProfile,
+  forgetPassword,
 } = require("../controllers/userControllers");
 const { isAuthenticated } = require("../middlewares/auth");
 const router = express.Router();
@@ -27,5 +28,8 @@ router.get("/signout", isAuthenticated, signoutUser);
 
 // POST /users/edit
 router.post("/edit", isAuthenticated, editUserProfile);
+
+// POST /forget
+router.post("/sendmail", forgetPassword);
 
 module.exports = router;

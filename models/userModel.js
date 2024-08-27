@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["male", "female", "others"],
     },
+    resetPasswordToken: {
+      type: String,
+      default: "0",
+    },
   },
   {
     timestamps: true,

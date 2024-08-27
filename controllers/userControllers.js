@@ -5,6 +5,7 @@ const { sendToken } = require("../utils/SendToken");
 const imagekit = require("../utils/Imagekit").initImageKit();
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
+const { sendMail } = require("../utils/Sendmail");
 
 module.exports.homepage = catchAsyncErrors(async (req, res, next) => {
   const alluser = await User.find({ _id: { $ne: req.id } });
@@ -90,4 +91,25 @@ module.exports.editUserProfile = catchAsyncErrors(async (req, res, next) => {
     message: "User Updated Successfully",
     user,
   });
+});
+
+module.exports.forgetPassword = catchAsyncErrors(async (req, res, next) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return next(
+      new ErrorHandler("User not found with this email address !", 404)
+    );
+  }
+
+  const url = `${req.protocol}://${req.get("host")}/users/forget-link/${
+    user._id
+  }`;
+  // send-mail
+  sendMail(req, res, next, url);
+  user.resetPasswordToken = "1";
+  await user.save();
+
+  res.status(200).json({ user, url });
 });
