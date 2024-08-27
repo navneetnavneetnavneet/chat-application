@@ -93,7 +93,7 @@ module.exports.editUserProfile = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-module.exports.forgetPassword = catchAsyncErrors(async (req, res, next) => {
+module.exports.sendMailUser = catchAsyncErrors(async (req, res, next) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
 
@@ -112,4 +112,26 @@ module.exports.forgetPassword = catchAsyncErrors(async (req, res, next) => {
   await user.save();
 
   res.status(200).json({ user, url });
+});
+
+module.exports.forgetPassword = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.params.id).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("User Not Found !", 404));
+  }
+
+  if (user.resetPasswordToken === "1") {
+    user.resetPasswordToken = "0";
+    user.password = req.body.password;
+    await user.save();
+  } else {
+    return next(
+      new ErrorHandler("Invalid Reset Password Link! please try again", 500)
+    );
+  }
+
+  res.status(200).json({
+    message: "Password Change Successfully",
+  });
 });

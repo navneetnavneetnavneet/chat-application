@@ -6,6 +6,7 @@ const {
   signinUser,
   signoutUser,
   editUserProfile,
+  sendMailUser,
   forgetPassword,
 } = require("../controllers/userControllers");
 const { isAuthenticated } = require("../middlewares/auth");
@@ -29,7 +30,10 @@ router.get("/signout", isAuthenticated, signoutUser);
 // POST /users/edit
 router.post("/edit", isAuthenticated, editUserProfile);
 
-// POST /forget
-router.post("/sendmail", forgetPassword);
+// POST /users/sendmail
+router.post("/sendmail", sendMailUser);
+
+// POST /users/forget-link/:id
+router.post("/forget-link/:id", forgetPassword);
 
 module.exports = router;
