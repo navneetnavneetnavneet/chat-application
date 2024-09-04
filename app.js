@@ -3,7 +3,7 @@ require("dotenv").config({
 });
 const express = require("express");
 // const app = express();
-const {app, server} = require("./socket/socket");
+const { app, server } = require("./socket/socket");
 const logger = require("morgan");
 const ErrorHandler = require("./utils/ErrorHandler");
 const { generatedErrors } = require("./middlewares/errors");
@@ -41,6 +41,7 @@ app.use(logger("tiny"));
 // routes
 app.use("/users", require("./routes/userRoutes"));
 app.use("/messages", require("./routes/messageRoutes"));
+app.use("/status", require("./routes/statusRoutes"));
 
 // error handling
 app.all("*", (req, res, next) => {
