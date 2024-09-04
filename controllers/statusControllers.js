@@ -50,7 +50,12 @@ module.exports.getAllStatus = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("User Not Found !", 404));
   }
 
-  const status = await Status.find().populate("user");
+  const status = await Status.find().populate({
+    path: "user",
+    populate: {
+      path: "status",
+    },
+  });
 
   const obj = {};
   const filteredStatus = status.filter((s) => {
@@ -73,5 +78,5 @@ module.exports.getAllStatus = catchAsyncErrors(async (req, res, next) => {
     otherUserStatus.unshift(loggedInUserStatus);
   }
 
-  res.status(200).json({ status: otherUserStatus });
+  res.status(200).json({ allStatus: otherUserStatus });
 });
