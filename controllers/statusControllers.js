@@ -42,3 +42,36 @@ module.exports.uploadStatus = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
+
+module.exports.getAllStatus = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.id);
+
+  if (!user) {
+    return next(new ErrorHandler("User Not Found !", 404));
+  }
+
+  const status = await Status.find().populate("user");
+
+  const obj = {};
+  const filteredStatus = status.filter((s) => {
+    if (!obj[s.user?._id]) {
+      return (obj[s.user?._id] = "kuchh bhi");
+    } else {
+      return false;
+    }
+  });
+
+  const loggedInUserStatus = filteredStatus.find(
+    (s) => s.user?._id.toString() === user._id.toString()
+  );
+
+  const otherUserStatus = filteredStatus.filter(
+    (s) => s.user?._id.toString() !== user._id.toString()
+  );
+
+  if (loggedInUserStatus) {
+    otherUserStatus.unshift(loggedInUserStatus);
+  }
+
+  res.status(200).json({ status: otherUserStatus });
+});
