@@ -80,3 +80,24 @@ module.exports.getAllStatus = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({ allStatus: otherUserStatus });
 });
+
+module.exports.deleteStatus = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.id);
+
+  if (!user) {
+    return next(new ErrorHandler("User Not Found !", 404));
+  }
+
+  if (!user.status.includes(req.params.id.toString())) {
+    return next(new ErrorHandler("Status Not Found !", 404));
+  }
+
+  user.status.splice(user.status.indexOf(req.params.id.toString()), 1);
+  await Status.findOneAndDelete({ _id: req.params.id });
+  await user.save();
+
+  res.status(200).json({
+    message: "Status delete successfully",
+    user,
+  });
+});

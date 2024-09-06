@@ -65,7 +65,6 @@ module.exports.editUserProfile = catchAsyncErrors(async (req, res, next) => {
   if (!user) {
     return next(new ErrorHandler("Please login to access the resource", 404));
   }
-  console.log(req.files);
 
   if (req.files) {
     // old file delete code
