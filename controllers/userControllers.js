@@ -67,12 +67,38 @@ module.exports.editUserProfile = catchAsyncErrors(async (req, res, next) => {
   }
 
   if (req.files) {
+    const validMimeTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/webp",
+    ];
+    if (!validMimeTypes.includes(req.files?.profileImage?.mimetype)) {
+      return next(
+        new ErrorHandler(
+          "Invalid file type. Only JPEG, PNG, JPG and WEBP files are allowed.",
+          500
+        )
+      );
+    }
+
+    const maxSize = 2 * 1024 * 1024; // 2MB
+
+    if (req.files?.profileImage?.size > maxSize) {
+      return next(
+        new ErrorHandler(
+          "File size exceeds the 2MB limit, Please select another file !",
+          500
+        )
+      );
+    }
+
     // old file delete code
     if (user.profileImage.fileId !== "") {
       await imagekit.deleteFile(user.profileImage.fileId);
     }
 
-    const file = req.files.profileImage;
+    const file = req.files?.profileImage;
     const modifiedFileName = uuidv4() + path.extname(file.name);
 
     const { fileId, url } = await imagekit.upload({
