@@ -63,16 +63,17 @@ module.exports.editUserProfile = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(req.id, req.body, { new: true });
 
   if (!user) {
-    return next(new ErrorHandler("Please login to access the resource", 404));
+    return next(new ErrorHandler("User Not Found !", 404));
   }
 
-  if (req.files) {
+  if (req.files && req.files.profileImage) {
     const validMimeTypes = [
       "image/jpeg",
       "image/png",
       "image/jpg",
       "image/webp",
     ];
+
     if (!validMimeTypes.includes(req.files?.profileImage?.mimetype)) {
       return next(
         new ErrorHandler(
@@ -93,9 +94,13 @@ module.exports.editUserProfile = catchAsyncErrors(async (req, res, next) => {
       );
     }
 
-    // old file delete code
-    if (user.profileImage.fileId !== "") {
-      await imagekit.deleteFile(user.profileImage.fileId);
+    try {
+      // old file delete code
+      if (user.profileImage.fileId !== "") {
+        await imagekit.deleteFile(user.profileImage.fileId);
+      }
+    } catch (error) {
+      console.error("Failed to delete old profile image:", error);
     }
 
     const file = req.files?.profileImage;
