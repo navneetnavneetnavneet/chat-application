@@ -23,6 +23,10 @@ module.exports.sendMessage = catchAsyncErrors(async (req, res, next) => {
     });
   }
 
+  if (!message && !req.files) {
+    return next(new ErrorHandler("Please send Message or media file !", 500));
+  }
+
   // send new message
   const newMessage = await Message.create({
     senderId,
