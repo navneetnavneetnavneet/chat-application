@@ -14,6 +14,46 @@ module.exports.uploadStatus = catchAsyncErrors(async (req, res, next) => {
   }
 
   if (req.files) {
+    const mimeType = req.files?.image?.mimetype.split("/")[0];
+
+    const validMimeTypes = [
+      // Image MIME types
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/svg+xml",
+      "image/avif",
+
+      // Video MIME types
+      "video/mp4",
+      "video/x-msvideo",
+      "video/mpeg",
+      "video/ogg",
+      "video/webm",
+      "video/3gpp",
+    ];
+
+    if (!validMimeTypes.includes(req.files?.image?.mimetype)) {
+      return next(
+        new ErrorHandler(
+          "Invalid file type this file is not allowed ! Please choose another file !",
+          500
+        )
+      );
+    }
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    if (req.files?.image?.size > maxSize) {
+      return next(
+        new ErrorHandler(
+          "File size exceeds the 10MB limit, Please select another file !",
+          500
+        )
+      );
+    }
+
     const file = req.files?.image;
     const modifiedFileName = uuidv4() + path.extname(file.name);
 
@@ -22,9 +62,9 @@ module.exports.uploadStatus = catchAsyncErrors(async (req, res, next) => {
       fileName: modifiedFileName,
     });
 
-    if (fileId && url) {
+    if (fileId && url && mimeType) {
       const status = await Status.create({
-        image: { fileId, url },
+        image: { fileId, url, fileType: mimeType },
         user: user._id,
       });
 

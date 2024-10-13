@@ -3,6 +3,11 @@ const mongoose = require("mongoose");
 const statusSchema = new mongoose.Schema({
   image: {
     type: Object,
+    default: {
+      fileId: "",
+      url: "",
+      fileType: "",
+    },
     required: [true, "Image is required !"],
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
