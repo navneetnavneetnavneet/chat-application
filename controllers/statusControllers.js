@@ -77,7 +77,7 @@ module.exports.uploadStatus = catchAsyncErrors(async (req, res, next) => {
     }
   }
 
-  res.status(200).json({
+  res.status(201).json({
     message: "Status uploaded successfully",
     user,
   });
